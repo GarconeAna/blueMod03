@@ -20,10 +20,10 @@ games = [
 
 mensagens = [
   'Bem vindo(a), esta app contem games que eu gosto! Para acessar todos os games [/games] Para acessar um filme [/games/id]',
-  'Bem vindo(a), aqui contem games! Rotas: [/games] [/games/id]',
-  'Bem vindo(a), voce acessou a rota [/]! Acesse outras como [/games] [/games/id]',
-  'Sem boas vindas. Rotas: [/games] [/games/id]',
-  'Todas as rotas dessa app: [/games] [/games/id]',
+  'Bem vindo(a), aqui contem games! Rotas: [/games] [/games/id] [/game-aleatorio]',
+  'Bem vindo(a), voce acessou a rota [/]! Acesse outras como [/games] [/games/id] [/game-aleatorio]',
+  'Sem boas vindas. Rotas: [/games] [/games/id] [/game-aleatorio]',
+  'Todas as rotas dessa app: [/games] [/games/id] [/game-aleatorio]',
 ];
 
 function randomMinMax(min,max){
@@ -45,12 +45,14 @@ app.get('/games', (req, res) =>{
 app.get('/games/:id', (req, res) =>{
   const id = req.params.id - 1;
   const game = games[id];
+
   if(!game) {
     res.status(404).send({
       message:"Jogo não encontrado. Tente novamente."
     });
     return;
   }
+
   res.send(game);
 });
 
@@ -63,6 +65,7 @@ app.post('/games', (req, res) =>{
   const id = games.length + 1;
 
   games.push(game);
+  
   res.send(`Jogo adicionado com sucesso:${game}. O ID do game é ${id}`);
 });
 
@@ -72,6 +75,7 @@ app.put('/games/:id', (req, res) =>{
   const nomeAnterior = games[id];
 
   games[id] = game;
+
   res.send(`Jogo anterior: ${nomeAnterior}, atualizado para: ${game}`);
 });
 
@@ -89,9 +93,16 @@ app.put('/games/:id', (req, res) =>{
 
 app.delete('/games/:id', (req, res)=>{
   const id = req.params.id - 1;
+
+  if(!games[id]){
+    res.status(404).send({
+      message:"Jogo não encontrado. Tente novamente."
+    });
+    return;
+  }
+
   games.splice(id, 1)
-  res.send("Jogo excluido com sucesso.")
-  // colocar verificacao
+  res.send("Jogo excluido com sucesso.");
 });
 
 app.listen(port, () =>{
